@@ -1,4 +1,28 @@
 const Board = require("../models/Board");
+const deleteBoard = async (req, res) => {
+  try {
+    const board = await Board.findOne({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
+
+    if (!board) {
+      return res.status(404).json({
+        message: "Board not found",
+      });
+    }
+
+    await board.deleteOne();
+
+    res.json({
+      message: "Board deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 const updateBoard = async (req, res) => {
   try {
     const board = await Board.findOne({
@@ -57,5 +81,7 @@ module.exports = {
   createBoard,
   getBoards,
   updateBoard,
+  deleteBoard,
+
 
 };
